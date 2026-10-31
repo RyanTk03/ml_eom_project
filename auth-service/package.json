@@ -1,0 +1,33 @@
+{
+  "name": "authentication-service",
+  "version": "2.0",
+  "description": "Authentication service for machine learning project monitoring",
+  "main": "dist/index.js",
+  "author": "Rayane TOKO",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start:prod": "dotenvx run -f .env.production -f .env.production.local -- node dist/index.js",
+    "start:dev": "dotenvx run -f .env.development -f .env.development.local -- tsx watch src/index.ts",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^2.38.2",
+    "fastify": "^5.6.1",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@tsconfig/node22": "^22.0.2",
+    "@types/node": "^24.9.1",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "pino-pretty": "^13.1.2",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2"
+  }
+}
