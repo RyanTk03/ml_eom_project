@@ -1,8 +1,11 @@
+//import { createUser } from '../actions/user.actions';
 import { defineHandlers } from '../libs/handlersUtils';
 
 const userHandlers = defineHandlers({
   create: async (req, res) => {
-    res.send();
+    // const user = createUser(req.body);
+
+    res.send(/*user*/);
   },
 
   search: async (req, res) => {
