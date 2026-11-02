@@ -1,0 +1,56 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: app
+      RABBITMQ_DEFAULT_PASS: app_password
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_stream advertised_host localhost"
+    command:
+      - /bin/bash
+      - -c
+      - |
+        rabbitmq-plugins enable --offline rabbitmq_stream rabbitmq_stream_management
+        exec rabbitmq-server
+    ports:
+      # AMQP 0-9-1 (Spring AMQP, amqplib, etc.)
+      - "127.0.0.1:5672:5672"
+      # RabbitMQ Stream Protocol
+      - "127.0.0.1:5552:5552"
+      # Management UI
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+  
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      RABBITMQ_URL: amqp://app:change_me_dev_only@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      RABBITMQ_URL: amqp://app:change_me_dev_only@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+volumes:
+  rabbitmq_data:
