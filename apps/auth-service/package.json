@@ -1,10 +1,11 @@
 {
-  "name": "authentication-service",
+  "name": "auth-service",
   "version": "0.1",
   "description": "Authentication service for machine learning project monitoring",
   "main": "dist/index.js",
   "author": "Rayane TOKO",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start:prod": "dotenvx run -f .env.production -f .env.production.local -- node dist/index.js",
@@ -14,8 +15,6 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@ml-eom/messaging": "*",
-    "@ml-eom/contracts": "*",
     "@dotenvx/dotenvx": "^2.38.2",
     "fastify": "^5.6.1",
     "jsonwebtoken": "^9.0.3"

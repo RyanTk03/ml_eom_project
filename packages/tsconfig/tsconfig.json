@@ -1,0 +1,7 @@
+{
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "compilerOptions": {
+    "target": "es2017",
+    "declaration": true
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@ml-eom/tsconfig",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.2"
+  }
+}

@@ -1,5 +1,5 @@
 import { type FastifyRequest } from 'fastify';
-import { HttpException } from '../libs/httpException';
+import { HttpException } from './httpException';
 
 const verifyAndDecodeToken = (req: FastifyRequest) => {
   const token = req.headers.authorization?.replace('Bearer ', '');

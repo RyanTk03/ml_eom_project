@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "author": "Rayane TOKO",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start:prod": "dotenvx run -f .env.production -f .env.production.local -- node dist/index.js",
