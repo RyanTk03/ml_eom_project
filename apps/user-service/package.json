@@ -1,5 +1,5 @@
 {
-  "name": "user-service",
+  "name": "@ml-eom/user-service",
   "version": "0.1",
   "description": "Authentication service for machine learning project monitoring",
   "main": "dist/index.js",
@@ -8,8 +8,8 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start:prod": "dotenvx run -f .env.production -f .env.production.local -- node dist/index.js",
-    "start:dev": "dotenvx run -f .env.development -f .env.development.local -- tsx watch src/index.ts",
+    "prod": "dotenvx run -f .env.production -f .env.production.local -- node dist/index.js",
+    "dev": "dotenvx run -f .env.development -f .env.development.local -- tsx watch src/index.ts",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
     "format": "prettier --write ."
@@ -22,7 +22,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
+    "@ml-eom/tsconfigs": "workspace:*",
     "@tsconfig/node22": "^22.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.9.1",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",

@@ -1,56 +1,66 @@
 services:
-  rabbitmq:
-    image: rabbitmq:4-management
-    container_name: rabbitmq
-    hostname: rabbitmq
-    restart: unless-stopped
-    environment:
-      RABBITMQ_DEFAULT_USER: app
-      RABBITMQ_DEFAULT_PASS: app_password
-      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_stream advertised_host localhost"
-    command:
-      - /bin/bash
-      - -c
-      - |
-        rabbitmq-plugins enable --offline rabbitmq_stream rabbitmq_stream_management
-        exec rabbitmq-server
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
     ports:
-      # AMQP 0-9-1 (Spring AMQP, amqplib, etc.)
-      - "127.0.0.1:5672:5672"
-      # RabbitMQ Stream Protocol
-      - "127.0.0.1:5552:5552"
-      # Management UI
-      - "127.0.0.1:15672:15672"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
-  
+      - "3000:3000"
+
   auth-service:
     build:
       context: .
-      dockerfile: auth-service/Dockerfile
+      dockerfile: apps/auth-service/Dockerfile
     restart: unless-stopped
-    environment:
-      RABBITMQ_URL: amqp://app:change_me_dev_only@rabbitmq:5672
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
+    networks:
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/api/auth`)"
+      - "traefik.http.routers.auth.entrypoints=web"
+      - "traefik.http.services.auth.loadbalancer.server.port=8080"
+    # restart: unless-stopped
+    # environment:
+    #   RABBITMQ_URL: amqp://app:change_me_dev_only@rabbitmq:5672
+    # depends_on:
+    #   rabbitmq:
+    #     condition: service_healthy
 
   user-service:
     build:
       context: .
-      dockerfile: user-service/Dockerfile
+      dockerfile: apps/user-service/Dockerfile
     restart: unless-stopped
-    environment:
-      RABBITMQ_URL: amqp://app:change_me_dev_only@rabbitmq:5672
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
+    networks:
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users.rule=PathPrefix(`/api/users`)"
+      - "traefik.http.routers.users.entrypoints=web"
+      - "traefik.http.services.users.loadbalancer.server.port=8082"
+    # environment:
+    #   RABBITMQ_URL: amqp://app:change_me_dev_only@rabbitmq:5672
+    # depends_on:
+    #   rabbitmq:
+    #     condition: service_healthy
+
+  traefik:
+    build:
+      context: ./gateway
+    container_name: "traefik"
+    ports:
+      - "9000:80"
+      - "9080:8080" 
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - backend
+    restart: unless-stopped
 
 volumes:
   rabbitmq_data:
+
+networks:
+  backend:
+    name: backend
+    driver: bridge

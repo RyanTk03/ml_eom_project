@@ -1,7 +1,0 @@
-{
-  "extends": "@ml-eom/tsconfig/tsconfig.json",
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src"
-  }
-}

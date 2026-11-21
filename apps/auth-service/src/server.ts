@@ -20,7 +20,7 @@ export const buildServer = () => {
   server.register(authProvider);
 
   // Register routes
-  server.register(router, { prefix: '/api/auth-service' });
+  server.register(router, { prefix: '/api' });
 
   return server;
 }

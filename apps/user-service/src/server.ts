@@ -24,7 +24,7 @@ export const buildServer = () => {
   server.register(dbConnection);
 
   // Register routes
-  server.register(router, { prefix: '/api/user-service' });
+  server.register(router, { prefix: '/api' });
 
   return server;
 }

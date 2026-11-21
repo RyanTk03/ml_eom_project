@@ -1,5 +1,17 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-export const encode = (data: AccessTokenPayload) => {};
+interface AccessTokenPayloadData {
+  userId: string;
+}
 
-export const decode = (token: string): AccessTokenPayload => {};
+export const encode = (data: AccessTokenPayloadData) => {
+  return jwt.sign({ data }, '');
+};
+
+export const decode = (token: string): AccessTokenPayloadData => {
+  const decoded = jwt.verify(token, '') as (JwtPayload & { data: AccessTokenPayloadData });
+
+  return {
+    userId: decoded.data.userId
+  };
+};

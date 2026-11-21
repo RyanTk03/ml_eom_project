@@ -1,8 +1,9 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "@ml-eom/tsconfigs/base.json",
   "compilerOptions": {
     "target": "es2017",
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "esModuleInterop": true
   }
 }
