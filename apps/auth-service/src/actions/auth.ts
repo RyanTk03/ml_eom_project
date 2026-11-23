@@ -6,12 +6,12 @@ import { LoginRequestBody, RegisterRequestBody } from "@ml-eom/shared-types/requ
 import InvalidRefreshToken from "../errors/InvalidRefreshToken";
 import InvalidAccessToken from "../errors/InvalidAccessToken";
 import PasswordConfirmationError from "../errors/PasswordConfirmationError";
+import { createUser } from "../clients/user";
 
 export const login = async (credentials: LoginRequestBody) => {
-  const hashedPassword = bcrypt.hashSync(credentials.password, 10);
-  const authDetails = await AuthDetails.findOne({ email: credentials.email, password: hashedPassword });
+  const authDetails = await AuthDetails.findOne({ email: credentials.email });
 
-  if (!authDetails) {
+  if (!authDetails || !bcrypt.compareSync(credentials.password, authDetails?.password ?? "")) {
     throw new InvalidAuthCredentials();
   }
 
@@ -92,14 +92,17 @@ export const getSession = async (accessToken?: string) => {
 }
 
 export const register = async (requestAuthDetails: RegisterRequestBody) => {
-  const authDetails = new AuthDetails();
-
   if (requestAuthDetails.password !== requestAuthDetails.confirmPassword) {
     throw new PasswordConfirmationError();
   }
 
+  const userResquestResponse = await createUser();
+
+  const authDetails = new AuthDetails();
+
   authDetails.email = requestAuthDetails.email;
   authDetails.password = bcrypt.hashSync(requestAuthDetails.password, 10);
+  authDetails.userId = userResquestResponse.data.user._id;
 
   await authDetails.save();
 

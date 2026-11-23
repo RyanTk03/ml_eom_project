@@ -3,29 +3,22 @@ import { UserNotFound } from "../errors/user-not-found";
 import { Organization } from "../models/organization.model";
 import { User } from "../models/user.model";
 
-interface CreateUserData {
-  firstName: string;
-  lastName: string;
-}
-
 /**
  * Create new user in the database.
  *
- * @param data {CreateUserData} data of the user to create
- *
  * @returns {UserDocument} new user created
  */
-export const createUser = async (data: CreateUserData) => {
-  const user = new User(data);
+export const createUser = async () => {
+  const user = new User();
 
   await user.save();
 
-  return user;
+  return user.toObject();
 };
 
 interface UpdateUserData {
-  organizationToAdd: string;
-  organizationToRemove: string;
+  // organizationToAdd: string;
+  // organizationToRemove: string;
   firstName: string;
   lastName: string;
 }
@@ -45,25 +38,25 @@ export const updateUser = async (id: string, data: Partial<UpdateUserData>) => {
     throw new UserNotFound(id);
   }
 
-  // Remove user from organization
-  if (data.organizationToRemove) {
-    foundUser.organizations = foundUser.organizations.filter(organization => organization.id !== data.organizationToRemove)
-  }
+  // // Remove user from organization
+  // if (data.organizationToRemove) {
+  //   foundUser.organizations = foundUser.organizations.filter(organization => organization.id !== data.organizationToRemove)
+  // }
 
-  // Add user to an organization
-  if (data.organizationToAdd) {
-    const foundOrganization = await Organization.findById(data.organizationToAdd);
+  // // Add user to an organization
+  // if (data.organizationToAdd) {
+  //   const foundOrganization = await Organization.findById(data.organizationToAdd);
 
-    if (!foundOrganization) {
-      throw new OrganizationNotFound(data.organizationToAdd)
-    }
+  //   if (!foundOrganization) {
+  //     throw new OrganizationNotFound(data.organizationToAdd)
+  //   }
 
-    foundUser.organizations.push({
-      id: data.organizationToAdd,
-      name: foundOrganization.name,
-      role: "PM",
-    });
-  }
+  //   foundUser.organizations.push({
+  //     id: data.organizationToAdd,
+  //     name: foundOrganization.name,
+  //     role: "PM",
+  //   });
+  // }
 
   return await User.findByIdAndUpdate(id, data);
 }

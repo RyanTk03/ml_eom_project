@@ -8,6 +8,8 @@ import { Layers, ArrowRight, Lock, Mail, CheckCircle2 } from "lucide-react";
 import { FormField } from "@/components/FormField";
 import { RegisterFormValues, registerValidationSchema } from "@/validations/register-form";
 import { register as authRegister } from "@/api/endpoints/auth";
+import { redirect } from "next/navigation";
+import { authLinks } from "@/libs/links";
 
 export default function RegisterPage() {
   const {
@@ -22,7 +24,7 @@ export default function RegisterPage() {
     const resp = await authRegister(data);
 
     if (resp.data) {
-      console.log(resp.data);
+      redirect(authLinks.login)
     }
   };
 

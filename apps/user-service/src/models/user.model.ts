@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
-import { UserModel, UserSchema } from "../types/models/user";
+import { UserModel } from "../types/models/user";
+import { User as UserSchema } from "@ml-eom/shared-types/database-schema";
 
 const userSchema = new Schema<UserSchema>({
   firstName: {
@@ -16,13 +17,6 @@ const userSchema = new Schema<UserSchema>({
     maxlength: 25,
     unique: false,
   },
-  organizations: [
-    {
-      id: Schema.ObjectId,
-      name: String,
-      role: String,
-    },
-  ],
 }, { timestamps: true });
 
 export const User = model<UserSchema, UserModel>("User", userSchema);

@@ -1,11 +1,11 @@
-//import { createUser } from '../actions/user.actions';
+import { createUser, updateUser } from '../actions/user.actions';
 import { defineHandlers } from '../libs/handlersUtils';
 
 const userHandlers = defineHandlers({
   create: async (req, res) => {
-    // const user = createUser(req.body);
+    const user = await createUser();
 
-    res.send(/*user*/);
+    res.send({ data: { user } });
   },
 
   search: async (req, res) => {
@@ -16,8 +16,10 @@ const userHandlers = defineHandlers({
     res.send('updated');
   },
 
-  updateById: (req, res) => {
-    res.send('updated');
+  updateById: async (req, res) => {
+    const user = await updateUser(req.params.id, req.body);
+
+    res.send({ data: { user } });
   },
 });
 

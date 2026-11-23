@@ -1,14 +1,5 @@
 import { HydratedDocument, Model } from "mongoose";
-
-interface UserSchema {
-  firstName: string;
-  lastName: string;
-  organizations: {
-    id: string;
-    name: string;
-    role: string;
-  }[]
-}
+import { User as UserSchema } from "@ml-eom/shared-types/database-schema";
 
 export type UserDocument = HydratedDocument<UserSchema>;
 

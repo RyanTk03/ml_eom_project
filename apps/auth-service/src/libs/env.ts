@@ -81,6 +81,8 @@ class Env {
   // --- DATABASE ---
   public DATABASE_URL!: string;
 
+  public USER_SERVICE_URL!: string;
+
   load(source: Source) {
     this.NODE_ENV = readOneOf(source, 'NODE_ENV', ['development', 'production', 'test'], 'development');
     this.PORT = readNumber(source, 'PORT', 3000);
@@ -94,6 +96,8 @@ class Env {
     this.COOKIE_SECURE = readBoolean(source, 'COOKIE_SECURE', this.IS_PRODUCTION);
 
     this.DATABASE_URL = readString(source, 'DATABASE_URL');
+
+    this.USER_SERVICE_URL = readString(source, "USER_SERVICE_URL")
   }
 }
 

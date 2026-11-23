@@ -1,4 +1,4 @@
-import { Model, model, Schema } from "mongoose";
+import { Model, model, Schema, SchemaTypes } from "mongoose";
 import { AuthDetailsSchema } from "@ml-eom/shared-types/database-schema";
 
 export const authDetailsSchema = new Schema<AuthDetailsSchema>({
@@ -27,7 +27,15 @@ export const authDetailsSchema = new Schema<AuthDetailsSchema>({
   refreshTokenId: {
     type: String,
     required: false,
-  }
+  },
+  authProvider: {
+    type: String,
+    default: "local"
+  },
+  userId: {
+    type: SchemaTypes.ObjectId,
+    required: true,
+  },
 }, { timestamps: true });
 
 export const AuthDetails = model<AuthDetailsSchema, Model<AuthDetailsSchema>>("AuthDetails", authDetailsSchema);

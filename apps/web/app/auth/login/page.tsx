@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { LoginFormValues, loginValidationSchema } from "@/validations/login-form";
 import { login } from "@/api/endpoints/auth";
+import { redirect } from "next/navigation";
+import { userDashboardLinks } from "@/libs/links";
 
 export default function LoginPage() {
   const {
@@ -22,7 +24,8 @@ export default function LoginPage() {
     const resp = await login(data);
 
     if (resp.data) {
-      console.log(resp.data);
+      localStorage.setItem("access_token", resp.data.data.access_token);
+      redirect(userDashboardLinks.viewProjects);
     }
   };
 
