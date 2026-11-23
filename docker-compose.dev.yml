@@ -14,6 +14,25 @@ services:
       - backend
     restart: unless-stopped
 
+  database:
+    image: mongo:7.0
+    restart: unless-stopped
+    networks:
+      - backend
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - database_dev:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "root", "--password", "example", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   auth-service:
     build:
       context: .
@@ -27,11 +46,22 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=PathPrefix(`/api/auth`)"
       - "traefik.http.routers.auth.entrypoints=web"
       - "traefik.http.services.auth.loadbalancer.server.port=8080"
+      - "traefik.http.routers.auth.middlewares=cors@docker"
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=http://localhost:3000"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=Content-Type,Authorization"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowcredentials=true"
+      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
 
   user-service:
     build:
@@ -46,11 +76,15 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    depends_on:
+      database:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.users.rule=PathPrefix(`/api/users`)"
       - "traefik.http.routers.users.entrypoints=web"
       - "traefik.http.services.users.loadbalancer.server.port=8082"
+      - "traefik.http.routers.users.middlewares=cors@docker"
 
   traefik:
     build:
@@ -69,6 +103,7 @@ volumes:
   web_node_modules:
   auth_node_modules:
   user_node_modules:
+  database_dev:
 
 networks:
   backend:

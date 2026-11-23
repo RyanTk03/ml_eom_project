@@ -7,6 +7,7 @@ import { FormField } from "@/components/FormField";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { LoginFormValues, loginValidationSchema } from "@/validations/login-form";
+import { login } from "@/api/endpoints/auth";
 
 export default function LoginPage() {
   const {
@@ -18,7 +19,11 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    const resp = register
+    const resp = await login(data);
+
+    if (resp.data) {
+      console.log(resp.data);
+    }
   };
 
   return (
@@ -50,7 +55,7 @@ export default function LoginPage() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="rounded-2xl border border-subtle bg-surface p-8 shadow-2xl backdrop-blur">
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             <FormField
               id="email"
               label="Work Email"

@@ -6,6 +6,26 @@ services:
       dockerfile: apps/web/Dockerfile
     ports:
       - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: mongo:7.0
+    restart: unless-stopped
+    networks:
+      - backend
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: good_username
+      MONGO_INITDB_ROOT_PASSWORD: strong_password
+    volumes:
+      - database:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--username", "good_username", "--password", "strong_password", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   auth-service:
     build:
@@ -14,6 +34,9 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    depends_on:
+      database:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=PathPrefix(`/api/auth`)"
@@ -33,6 +56,9 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    depends_on:
+      database:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.users.rule=PathPrefix(`/api/users`)"
@@ -56,9 +82,16 @@ services:
     networks:
       - backend
     restart: unless-stopped
+    labels:
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=http://localhost:3000"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=Content-Type,Authorization"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowcredentials=true"
+      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
 
 volumes:
   rabbitmq_data:
+  database:
 
 networks:
   backend:

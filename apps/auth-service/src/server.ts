@@ -4,11 +4,22 @@ import { logger } from './libs/logger';
 import { envLoader } from './plugins/env-loader';
 import { errorsHandler } from './plugins/errors-handler';
 import { authProvider } from './plugins/auth-provider';
+import cors from '@fastify/cors';
+import fastifyCookie from '@fastify/cookie';
+import { dbConnection } from './plugins/db-connection';
 
 export const buildServer = () => {
   const server = fastify({
     logger: logger,
   });
+
+  server.register(cors, {
+    origin: ['http://localhost:3000', ''],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],    
+    credentials: true 
+  });
+
+  server.register(fastifyCookie)
 
   // Errors handler
   server.register(errorsHandler);
@@ -18,6 +29,9 @@ export const buildServer = () => {
 
   // Authentication provider: fill all request with authenticated user details
   server.register(authProvider);
+
+  // Register database connection
+  server.register(dbConnection);
 
   // Register routes
   server.register(router, { prefix: '/api' });

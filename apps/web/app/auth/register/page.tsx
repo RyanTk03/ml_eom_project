@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Layers, ArrowRight, Lock, Mail, CheckCircle2 } from "lucide-react";
 import { FormField } from "@/components/FormField";
 import { RegisterFormValues, registerValidationSchema } from "@/validations/register-form";
+import { register as authRegister } from "@/api/endpoints/auth";
 
 export default function RegisterPage() {
   const {
@@ -18,7 +19,11 @@ export default function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterFormValues) => {
-    const resp = register
+    const resp = await authRegister(data);
+
+    if (resp.data) {
+      console.log(resp.data);
+    }
   };
 
   return (

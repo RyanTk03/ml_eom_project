@@ -72,15 +72,14 @@ class Env {
   // --- JWT ---
   public ACCESS_SECRET!: string;
   public REFRESH_SECRET!: string;
-  public ACCESS_EXPIRES_IN!: string;
-  public REFRESH_EXPIRES_IN!: string;
+  public ACCESS_EXPIRES_IN!: number;
+  public REFRESH_EXPIRES_IN!: number;
 
   // --- Cookies ---
   public COOKIE_SECURE!: boolean;
 
   // --- DATABASE ---
   public DATABASE_URL!: string;
-
 
   load(source: Source) {
     this.NODE_ENV = readOneOf(source, 'NODE_ENV', ['development', 'production', 'test'], 'development');
@@ -89,8 +88,8 @@ class Env {
 
     this.ACCESS_SECRET = readString(source, 'ACCESS_SECRET');
     this.REFRESH_SECRET = readString(source, 'REFRESH_SECRET');
-    this.ACCESS_EXPIRES_IN = readString(source, 'ACCESS_EXPIRES_IN', '15m');
-    this.REFRESH_EXPIRES_IN = readString(source, 'REFRESH_EXPIRES_IN', '7d');
+    this.ACCESS_EXPIRES_IN = readNumber(source, 'ACCESS_EXPIRES_IN', 15 * 60 /* 15 minutes */);
+    this.REFRESH_EXPIRES_IN = readNumber(source, 'REFRESH_EXPIRES_IN', 7 * 24 * 60 * 60 /* 7 days */);
 
     this.COOKIE_SECURE = readBoolean(source, 'COOKIE_SECURE', this.IS_PRODUCTION);
 

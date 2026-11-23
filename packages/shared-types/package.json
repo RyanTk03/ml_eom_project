@@ -1,0 +1,9 @@
+{
+  "name": "@ml-eom/shared-types",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./database-schema": "./src/database-schema/index.ts",
+    "./requests-bodies/auth-service": "./src/requests-bodies/auth-service/index.ts"
+  }
+}

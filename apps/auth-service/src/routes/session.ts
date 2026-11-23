@@ -6,4 +6,5 @@ export const sessionRoutes: FastifyPluginCallback = (fastify) => {
   fastify.get('/', authHandlers.getSession);
   fastify.post('/refresh', authHandlers.refreshSession);
   fastify.post('/logout', authHandlers.logout);
+  fastify.post('/register', authHandlers.register);
 };
