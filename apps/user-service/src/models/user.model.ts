@@ -5,17 +5,17 @@ import { User as UserSchema } from "@ml-eom/shared-types/database-schema";
 const userSchema = new Schema<UserSchema>({
   firstName: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 25,
     unique: false,
+    required: false,
   },
   lastName: {
     type: String,
-    required: true,
     minlength: 2,
     maxlength: 25,
     unique: false,
+    required: false,
   },
 }, { timestamps: true });
 

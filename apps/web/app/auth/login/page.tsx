@@ -24,7 +24,8 @@ export default function LoginPage() {
     const resp = await login(data);
 
     if (resp.data) {
-      localStorage.setItem("access_token", resp.data.data.access_token);
+      console.log(resp.data.data.accessToken);
+      localStorage.setItem("access-token", resp.data.data.accessToken);
       redirect(userDashboardLinks.viewProjects);
     }
   };

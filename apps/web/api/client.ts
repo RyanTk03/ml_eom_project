@@ -15,4 +15,4 @@ axiosForApiCall.interceptors.request.use((configs) => {
   }
 
   return configs;
-})
+});

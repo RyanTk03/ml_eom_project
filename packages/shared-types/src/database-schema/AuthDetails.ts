@@ -5,6 +5,6 @@ export default interface AuthDetailsSchema {
   emailVerified: boolean;
   role: string;
   refreshTokenId?: string | null;
-  authProvider: "local";
-  userId?: string;
+  authProvider: string; // "local"
+  userId: string;
 }

@@ -14,7 +14,7 @@ const authHandlers = defineHandlers({
     const { accessToken, refreshToken } = await login(req.body as LoginRequestBody);
 
     return res
-      .setCookie('refreshToken', refreshToken, buildRefreshTokenCookieOptions())
+      .setCookie('refresh-token', refreshToken, buildRefreshTokenCookieOptions())
       .send({ data: { accessToken } });
   },
 
@@ -25,10 +25,10 @@ const authHandlers = defineHandlers({
   },
 
   refreshSession: async (req, res) => {
-    const tokens = await refresh(req.cookies.refreshToken);
+    const tokens = await refresh(req.cookies['refresh-token']);
   
     res
-    .setCookie('refreshToken', tokens.refreshToken, buildRefreshTokenCookieOptions())
+    .setCookie('refresh-token', tokens.refreshToken, buildRefreshTokenCookieOptions())
     .send({ data: { accessToken: tokens.accessToken } });
   },
 
@@ -36,7 +36,7 @@ const authHandlers = defineHandlers({
     await logout();
 
     return res
-    .clearCookie('refreshToken', { path: '/api/auth' })
+    .clearCookie('refresh-token', { path: '/api/auth' })
     .code(204)
     .send();
   },

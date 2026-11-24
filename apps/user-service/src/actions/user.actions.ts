@@ -1,7 +1,8 @@
-import { OrganizationNotFound } from "../errors/organization-not-found";
+import { getSession } from "../clients/auth";
+import InvalidAccessToken from "../errors/invalid-access-token";
 import { UserNotFound } from "../errors/user-not-found";
-import { Organization } from "../models/organization.model";
 import { User } from "../models/user.model";
+import type { UserUpdateRequestBody } from "@ml-eom/shared-types/requests-bodies/user-service";
 
 /**
  * Create new user in the database.
@@ -59,6 +60,37 @@ export const updateUser = async (id: string, data: Partial<UpdateUserData>) => {
   // }
 
   return await User.findByIdAndUpdate(id, data);
+}
+
+export const updateAuthenticatedUser = async (data: UserUpdateRequestBody, authorizationHeader?: string) => {
+  if (!authorizationHeader) {
+    throw new InvalidAccessToken();
+  }
+
+  const response = (await getSession(authorizationHeader));
+  console.log(response.data);
+  const session = response.data.session
+  const me = await User.findById(session.userId);
+
+  if (!me) {
+    throw new UserNotFound(session.userId);
+  }
+  me.lastName = data.lastName;
+  me.firstName = data.firstName;
+
+  me.save();
+  return me;
+}
+
+export const getAuthenticatedUser = async (authorizationHeader?: string) => {
+  if (!authorizationHeader) {
+    throw new InvalidAccessToken();
+  }
+
+  const session = (await getSession(authorizationHeader)).data.session;
+  const me = await User.findById(session.userId);
+
+  return me?.toObject();
 }
 
 interface SearchFilter {

@@ -1,5 +1,5 @@
 export default interface LoginResponseBody {
   data: {
-    access_token: string;
+    accessToken: string;
   };
 }

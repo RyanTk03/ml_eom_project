@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto';
 interface AccessTokenPayloadData {
   email: string;
   role: string;
+  userId: string;
 }
 
 export const encode = (data: AccessTokenPayloadData) => {

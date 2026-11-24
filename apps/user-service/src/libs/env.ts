@@ -71,10 +71,13 @@ class Env {
   // --- DATABASE ---
   public DATABASE_URL!: string;
 
+  public AUTH_SERVICE_URL!: string;
+
 
   load(source: Source) {
     this.NODE_ENV = readOneOf(source, 'NODE_ENV', ['development', 'production', 'test'], 'development');
     this.PORT = readNumber(source, 'PORT', 3002);
+    this.AUTH_SERVICE_URL = readString(source, 'AUTH_SERVICE_URL')
 
     this.DATABASE_URL = readString(source, 'DATABASE_URL');
   }

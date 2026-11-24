@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { AuthDetails } from "../models/AuthDetails";
+import { AuthDetails } from "../models/auth-details.model";
 import InvalidAuthCredentials from "../errors/InvalidAuthCredentials";
 import { decode, encode } from "../libs/tokens-manager";
 import { LoginRequestBody, RegisterRequestBody } from "@ml-eom/shared-types/requests-bodies/auth-service";
@@ -15,7 +15,7 @@ export const login = async (credentials: LoginRequestBody) => {
     throw new InvalidAuthCredentials();
   }
 
-  const tokens = encode({ email: authDetails.email, role: authDetails.role });
+  const tokens = encode({ email: authDetails.email, role: authDetails.role, userId: authDetails.userId });
 
   return {
     accessToken: tokens.accessToken,
@@ -62,6 +62,7 @@ export const refresh = async (refreshToken?: string) => {
   const tokens = encode({
     email: authDetails.email,
     role: authDetails.role,
+    userId: authDetails.userId,
   });
 
   authDetails.refreshTokenId = tokens.artifacts.jwtid;
