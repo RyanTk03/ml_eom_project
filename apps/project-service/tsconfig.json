@@ -1,0 +1,9 @@
+{
+  "extends": "@ml-eom/tsconfigs/base.json",
+  "compilerOptions": {
+    "target": "es2017",
+    "outDir": "dist",
+    "rootDir": "src",
+    "esModuleInterop": true
+  }
+}

@@ -15,6 +15,7 @@ export const encode = (data: AccessTokenPayloadData) => {
     accessToken: jwt.sign({ data }, env.ACCESS_SECRET, {
       expiresIn: env.ACCESS_EXPIRES_IN,
       subject: data.email,
+      algorithm: "RS256"
     }),
     refreshToken: jwt.sign({}, env.REFRESH_SECRET, {
       expiresIn: env.REFRESH_EXPIRES_IN,

@@ -7,6 +7,9 @@
     "./requests-bodies/auth-service": "./src/requests-bodies/auth-service/index.ts",
     "./responses-bodies/auth-service": "./src/responses-bodies/auth-service/index.ts",
     "./requests-bodies/user-service": "./src/requests-bodies/user-service/index.ts",
-    "./responses-bodies/user-service": "./src/responses-bodies/user-service/index.ts"
+    "./responses-bodies/user-service": "./src/responses-bodies/user-service/index.ts",
+    "./requests-bodies/project-service": "./src/requests-bodies/project-service/index.ts",
+    "./responses-bodies/project-service": "./src/responses-bodies/project-service/index.ts",
+    ".": "./src/index.ts"
   }
 }

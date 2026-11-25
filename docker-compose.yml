@@ -70,6 +70,22 @@ services:
     #   rabbitmq:
     #     condition: service_healthy
 
+  project-service:
+    build:
+      context: .
+      dockerfile: apps/project-service/Dockerfile
+    restart: unless-stopped
+    networks:
+      - backend
+    depends_on:
+      database:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.projects.rule=PathPrefix(`/api/projects`)"
+      - "traefik.http.routers.projects.entrypoints=web"
+      - "traefik.http.services.projects.loadbalancer.server.port=8084"
+
   traefik:
     build:
       context: ./gateway

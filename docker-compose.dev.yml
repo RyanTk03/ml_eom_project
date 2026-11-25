@@ -100,6 +100,29 @@ services:
       - "traefik.http.services.users.loadbalancer.server.port=8082"
       - "traefik.http.routers.users.middlewares=cors@docker"
 
+  project-service:
+    build:
+      context: .
+      dockerfile: apps/project-service/Dockerfile
+      target: builder
+    working_dir: /app
+    command: pnpm --filter @ml-eom/project-service dev
+    volumes:
+      - .:/app
+      - project_node_modules:/app/node_modules
+    restart: unless-stopped
+    networks:
+      - backend
+    depends_on:
+      database:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.projects.rule=PathPrefix(`/api/projects`)"
+      - "traefik.http.routers.projects.entrypoints=web"
+      - "traefik.http.services.projects.loadbalancer.server.port=8084"
+      - "traefik.http.routers.projects.middlewares=cors@docker"
+
   traefik:
     build:
       context: ./gateway
@@ -117,6 +140,7 @@ volumes:
   web_node_modules:
   auth_node_modules:
   user_node_modules:
+  project_node_modules:
   database_dev:
 
 networks:
